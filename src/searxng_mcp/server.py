@@ -5,6 +5,7 @@ from dotenv import load_dotenv
 from fastmcp import FastMCP
 from fastmcp.exceptions import ToolError
 
+from .fetch import FetchError, fetch_page
 from .searxng import SearXNGClient, SearXNGError
 
 load_dotenv()
@@ -58,6 +59,20 @@ async def search(
         "answers": data.get("answers", []),
         "suggestions": data.get("suggestions", []),
     }
+
+
+@mcp.tool
+async def fetch(url: str, max_length: int = 20000) -> dict[str, Any]:
+    """Fetch a web page and return its main content as Markdown.
+
+    Args:
+        url: The http or https URL to fetch.
+        max_length: Maximum number of characters of content to return.
+    """
+    try:
+        return await fetch_page(url, max_length)
+    except FetchError as e:
+        raise ToolError(str(e)) from e
 
 
 def main() -> None:
