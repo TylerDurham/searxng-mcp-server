@@ -1,0 +1,21 @@
+[project]
+name = "searxng-mcp"
+version = "0.1.0"
+description = "A simple MCP Server for the SearXNG hosted search service."
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = [
+    "fastmcp>=4.1",
+    "httpx>=0.28",
+    "python-dotenv>=1.0",
+]
+
+[project.scripts]
+searxng-mcp = "searxng_mcp.server:main"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/searxng_mcp"]
