@@ -21,9 +21,10 @@ install: clean build
 serve transport="stdio":
     MCP_TRANSPORT={{transport}} uv run searxng-mcp
 
-# Run the server in Docker via compose
+# Run the server in Docker via compose, resolving op:// references with 1Password
 serve-docker:
-    docker compose up --build
+    SEARXNG_URL="$(docker compose config --format json | jq -r '.services["searxng-mcp"].environment.SEARXNG_URL')" \
+        op run -- docker compose up --build
 
 # Uninstall (using uv tool uninstall)
 uninstall:

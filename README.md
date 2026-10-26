@@ -49,6 +49,25 @@ claude mcp add SearXNG -- uv run --directory /path/to/searxng-mcp-server searxng
 
 Check the server with `claude mcp get SearXNG`, and remove it with `claude mcp remove SearXNG -s user`.
 
+### Remote server (HTTP)
+
+If the server is already running somewhere in HTTP mode (for example, with Docker), point Claude Code at its URL instead of installing it locally:
+
+```sh
+claude mcp add --transport http SearXNG -s user https://mcp.example.com/mcp
+```
+
+The URL must end in `/mcp`. Settings such as `SEARXNG_URL` belong to the remote server, so there are no `-e` flags here.
+
+If the server is behind a reverse proxy that requires a token, add the header the proxy expects:
+
+```sh
+claude mcp add --transport http SearXNG -s user https://mcp.example.com/mcp \
+  --header "Authorization: Bearer <token>"
+```
+
+The header is saved in plain text in `~/.claude.json` (or `.mcp.json` with `-s project`, so don't commit a token that way).
+
 ## Tools
 
 ### `search`
