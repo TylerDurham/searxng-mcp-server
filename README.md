@@ -27,6 +27,28 @@ search:
   formats: [html, json]
 ```
 
+## Use with Claude Code
+
+Install the `searxng-mcp` command, then register it with Claude Code:
+
+```sh
+just install    # or: uv build && uv tool install --reinstall dist/searxng_mcp-*.whl
+
+claude mcp add SearXNG -s user -e SEARXNG_URL=https://searx.example.com -- searxng-mcp
+```
+
+`-s user` makes it available in every project; leave it off to add it to the current project only. Start a new Claude Code session to load the tools, which appear as `mcp__SearXNG__search` and `mcp__SearXNG__fetch`.
+
+The installed command doesn't read this repo's `.env`, so pass settings with `-e`. Add one `-e` per setting, for example `-e SEARXNG_SAFESEARCH=0`. Without `SEARXNG_URL`, searches fail with `Request to SearXNG at http://localhost:8080 failed`.
+
+To run from a checkout instead of installing (using its `.env`):
+
+```sh
+claude mcp add SearXNG -- uv run --directory /path/to/searxng-mcp-server searxng-mcp
+```
+
+Check the server with `claude mcp get SearXNG`, and remove it with `claude mcp remove SearXNG -s user`.
+
 ## Tools
 
 ### `search`
