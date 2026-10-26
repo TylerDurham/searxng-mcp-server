@@ -76,6 +76,16 @@ MCP_URL=http://myhost:8000/mcp ./clients/search.sh "fastmcp python"
 
 Prints the results as JSON. If the search fails (for example, SearXNG is unreachable), the error goes to stderr and the script exits with status 1.
 
+### Fetch
+
+```sh
+./clients/fetch.sh https://example.com            # up to 20000 characters
+./clients/fetch.sh https://example.com 5000       # choose the limit
+./clients/fetch.sh https://example.com > page.md  # save just the content
+```
+
+Prints the page content as Markdown to stdout, and the title and final URL to stderr, so redirecting stdout saves only the content. Errors (for example, a blocked private address) go to stderr and the script exits with status 1.
+
 ## Docker
 
 The simplest way is Docker Compose, which reads settings from `.env` and serves HTTP on `127.0.0.1:8000`:
