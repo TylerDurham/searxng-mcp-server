@@ -27,6 +27,26 @@ search:
   formats: [html, json]
 ```
 
+## Tools
+
+### `search`
+
+Searches the web through your SearXNG instance. Takes a `query` plus optional `max_results` (default 10), `categories`, `language`, `time_range` (`day`, `month`, or `year`), and `page`. Returns each result's title, URL, snippet, and engine, along with any answers and suggestions.
+
+### `fetch`
+
+Fetches a web page and returns its main content as Markdown, with menus, footers, and ads stripped out. Takes a `url` and an optional `max_length` (default 20000 characters). Returns the final URL after redirects, the page title, the content, and whether it was truncated. Plain-text and JSON responses are returned as-is; other content types, such as images, are rejected.
+
+Settings:
+
+| Variable | Default | Purpose |
+|---|---|---|
+| `FETCH_TIMEOUT` | `15` | Request timeout, in seconds |
+| `FETCH_MAX_BYTES` | `5000000` | Largest download allowed |
+| `FETCH_ALLOW_PRIVATE` | `false` | Allow `localhost` and private network addresses |
+
+By default, `fetch` refuses URLs that resolve to `localhost`, private network, or link-local addresses, and checks every redirect. This stops anyone who can reach the server from using it to probe your internal network. Only set `FETCH_ALLOW_PRIVATE=true` when running over STDIO or on a trusted network. The check doesn't defend against DNS rebinding, so it's not a substitute for authentication on a public endpoint.
+
 ## Clients
 
 The `clients/` directory has bash scripts for talking to the server over HTTP. They require `curl` and `jq`, and the server must be running in HTTP mode:
@@ -55,6 +75,16 @@ MCP_URL=http://myhost:8000/mcp ./clients/search.sh "fastmcp python"
 ```
 
 Prints the results as JSON. If the search fails (for example, SearXNG is unreachable), the error goes to stderr and the script exits with status 1.
+
+### Fetch
+
+```sh
+./clients/fetch.sh https://example.com            # up to 20000 characters
+./clients/fetch.sh https://example.com 5000       # choose the limit
+./clients/fetch.sh https://example.com > page.md  # save just the content
+```
+
+Prints the page content as Markdown to stdout, and the title and final URL to stderr, so redirecting stdout saves only the content. Errors (for example, a blocked private address) go to stderr and the script exits with status 1.
 
 ## Docker
 
