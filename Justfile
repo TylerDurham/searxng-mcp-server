@@ -8,6 +8,13 @@ build:
     uv build
     docker compose build
 
+build-tag:
+  # an image you built
+  docker build -t git.snork.co/dtd/searxng-mcp-server:latest .
+
+  # # or retag one you already have
+  # docker tag myapp:latest gitea.snork.co/tyler/myapp:latest
+
 # Remove build artifacts and caches (keeps .venv)
 clean:
     rm -rf dist build .ruff_cache .pytest_cache

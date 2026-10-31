@@ -148,3 +148,13 @@ docker run -d -p 127.0.0.1:8000:8000 --env-file .env \
 `.env` is excluded from the image, so settings are never baked in.
 
 The HTTP endpoint has no authentication, which is why the port is bound to localhost. Don't expose it publicly without a protected reverse proxy in front of it.
+
+### Browser clients (CORS)
+
+Clients that connect from a web page, such as the llama.cpp web UI, need CORS. Set `MCP_CORS_ORIGINS` to a comma-separated list of the origins those pages are served from:
+
+```sh
+MCP_CORS_ORIGINS=http://127.0.0.1:8080,http://localhost:8080
+```
+
+CORS is off by default. Avoid `*`: any website you visit could then call the server, including `fetch`, from your browser.

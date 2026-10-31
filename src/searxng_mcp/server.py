@@ -4,6 +4,8 @@ from typing import Any, Literal
 from dotenv import load_dotenv
 from fastmcp import FastMCP
 from fastmcp.exceptions import ToolError
+from starlette.middleware import Middleware
+from starlette.middleware.cors import CORSMiddleware
 
 from .fetch import FetchError, fetch_page
 from .searxng import SearXNGClient, SearXNGError
@@ -79,10 +81,28 @@ def main() -> None:
     transport = os.getenv("MCP_TRANSPORT", "stdio")
 
     if transport == "http":
+        # Browser-based clients (e.g. the llama.cpp web UI) need CORS. Opt-in
+        # because the endpoint is unauthenticated.
+        cors_origins = [
+            o.strip() for o in os.getenv("MCP_CORS_ORIGINS", "").split(",") if o.strip()
+        ]
+        middleware = []
+        if cors_origins:
+            middleware.append(
+                Middleware(
+                    CORSMiddleware,
+                    allow_origins=cors_origins,
+                    allow_methods=["GET", "POST", "DELETE", "OPTIONS"],
+                    allow_headers=["*"],
+                    expose_headers=["mcp-session-id", "mcp-protocol-version"],
+                )
+            )
+
         mcp.run(
             transport="http",
             host=os.getenv("MCP_HOST", "127.0.0.1"),
             port=int(os.getenv("MCP_PORT", "8000")),
+            middleware=middleware,
         )
     else:
         mcp.run()
