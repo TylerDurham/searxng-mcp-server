@@ -15,7 +15,7 @@ services:
       # Taken from the shell or .env; otherwise a 1Password reference that
       # `op run` resolves (see `just serve-docker`).
       SEARXNG_URL: ${SEARXNG_URL}
-      MCP_CORS_ORIGINS: http://127.0.0.1:9931
+      MCP_CORS_ORIGINS: ${MCP_CORS_ORIGINS:-}
     # Bound to localhost because the endpoint has no authentication.
     # Put a protected reverse proxy in front before exposing it further.
     ports:
